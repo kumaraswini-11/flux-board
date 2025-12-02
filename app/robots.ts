@@ -1,6 +1,6 @@
-import type { MetadataRoute } from 'next'
+import type { MetadataRoute } from "next";
 
-import { env } from '@/lib/env'
+import { env } from "@/lib/env";
 
 /**
  * Next.js automatically serves this file as /robots.txt.
@@ -22,13 +22,13 @@ export default function robots(): MetadataRoute.Robots {
   return {
     // Basic rules: Apply to all user agents
     rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: '/api/*',
+      userAgent: "*",
+      allow: "/",
+      disallow: "/api/*",
       crawlDelay: 2, // Be nice to crawlers - Seconds between requests – polite to servers (optional, non-standard)
     },
 
     // Always point to the correct sitemap (Google loves this)
     sitemap: `${env.NEXT_PUBLIC_BASE_URL}/sitemap.xml`,
-  }
+  };
 }

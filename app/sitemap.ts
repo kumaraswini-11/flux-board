@@ -53,13 +53,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${baseUrl}/sign-in`,
       lastModified: new Date(),
-      changeFrequency: 'never',
+      changeFrequency: "never",
       priority: 0.3,
     },
     {
       url: `${baseUrl}/sign-up`,
       lastModified: new Date(),
-      changeFrequency: 'never',
+      changeFrequency: "never",
       priority: 0.3,
     },
 
@@ -67,19 +67,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${baseUrl}/dashboard`,
       lastModified: new Date(),
-      changeFrequency: 'daily',
+      changeFrequency: "daily",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/settings`,
       lastModified: new Date(),
-      changeFrequency: 'monthly',
+      changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${baseUrl}/members`,
       lastModified: new Date(),
-      changeFrequency: 'monthly',
+      changeFrequency: "monthly",
       priority: 0.7,
     },
   ];

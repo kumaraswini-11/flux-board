@@ -18,7 +18,7 @@ Live demo → <https://fluxboard.vercel.app>
 - Light & Dark mode (default)
 - 100 % TypeScript • Fully type-safe end-to-end
 
-## Tech Stack (2025–2026 production-grade)
+## Tech Stack
 
 - **Next.js 16** (App Router + React Server Components)
 - **React 19** (React Compiler enabled)

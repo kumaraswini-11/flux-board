@@ -43,8 +43,9 @@ export const metadata: Metadata = {
     template: "%s | Fluxboard", // Auto-applies to all child pages
   },
 
- // Compelling meta description: 150–160 chars, keyword-focused for snippets
-  description: 'Real-time Kanban boards, unlimited workspaces, and powerful analytics. The fastest way modern teams ship products — without the Jira complexity.',
+  // Compelling meta description: 150–160 chars, keyword-focused for snippets
+  description:
+    "Real-time Kanban boards, unlimited workspaces, and powerful analytics. The fastest way modern teams ship products — without the Jira complexity.",
 
   // Optional but helpful for discoverability
   keywords: [
@@ -61,14 +62,15 @@ export const metadata: Metadata = {
   // Open Graph: Core for social previews (FB, LinkedIn, Discord etc.); share siteName & locale for consistency
   openGraph: {
     title: "Fluxboard – Blazing-Fast Project Management",
-    description: "The board where flow never stops. Real-time, beautiful, and built for speed.",
+    description:
+      "The board where flow never stops. Real-time, beautiful, and built for speed.",
     url: env.NEXT_PUBLIC_BASE_URL,
     siteName: "Fluxboard",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "/og-image.jpg",        // Auto-prefixed to full URL via metadataBase → https://flux-board.com/og-image.jpg
+        url: "/og-image.jpg", // Auto-prefixed to full URL via metadataBase → https://flux-board.com/og-image.jpg
         width: 1200,
         height: 630,
         alt: "Fluxboard Dashboard – Clean Kanban with Real-Time Sync",
@@ -80,9 +82,10 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Fluxboard – Blazing-Fast Project Management",
-    description: "The board where flow never stops. Real-time, beautiful, and fast.",
-    creator: "@fluxboard",         
-    images: ["/og-image.jpg"],     
+    description:
+      "The board where flow never stops. Real-time, beautiful, and fast.",
+    creator: "@fluxboard",
+    images: ["/og-image.jpg"],
   },
 
   // Robots: Allow full indexing/follow; generous Google directives for rich results (no limits on snippets/videos)
@@ -93,8 +96,8 @@ export const metadata: Metadata = {
       index: true,
       follow: true,
       "max-video-preview": -1,
-      "max-image-preview": "large",   // Shows big rich previews in Google
-      "max-snippet": -1,              // No snippet length limit
+      "max-image-preview": "large", // Shows big rich previews in Google
+      "max-snippet": -1, // No snippet length limit
     },
   },
 
