@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 
 import { env } from "@/lib/env";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 // 1. Optimize Fonts
@@ -23,7 +25,6 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5, // Allows reasonable zoom for accessibility
   userScalable: true, // Enables scaling (remove if PWA zoom issues)
-  colorScheme: "dark",
   themeColor: [
     // Added: For mobile browser tinting (docs recommend media queries)
     { media: "(prefers-color-scheme: dark)", color: "#050505" },
@@ -117,7 +118,17 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetBrainsMono.variable} antialiased`}
       >
-        {children}
+        {/* 5. Wrap content in ThemeProvider to handle Dark/Light/System */}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          {/* 6. Add Toast provider here so it's accessible everywhere */}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
