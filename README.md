@@ -35,6 +35,7 @@ Live demo → <https://fluxboard.vercel.app>
 - **Biome** (linting/formatting)
 - **CodeRabbit** (automated AI PR reviews)
 - **Arcjet**
+- **T3 Env**
 
 ## Quick Start
 
@@ -64,7 +65,7 @@ bun dev
 ## Referance
 
 - Application logo inspired by → [LogoIpsum](https://logoipsum.com)
-- Generate icons using → [RealFaviconGenerator](https://realfavicongenerator.net/)
+- Generate icons using → [RealFaviconGenerator](https://realfavicongenerator.net/)- [OpenGraph Preview](https://www.opengraph.xyz/)
 <!-- - [YouTube](https://www.youtube.com/watch?v=Av9C7xlV0fA) -->
 
 ## License
