@@ -4,6 +4,7 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     DATABASE_URL: z.url(),
+    ARCJET_KEY:z.string().min(1),
   },
 
   /**

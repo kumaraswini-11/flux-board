@@ -36,6 +36,7 @@ Live demo → <https://fluxboard.vercel.app>
 - **CodeRabbit** (automated AI PR reviews)
 - **Arcjet**
 - **T3 Env**
+- **TRPC (TypeScript Remote Procedure Calls)** + **React Query**
 
 ## Quick Start
 
@@ -65,8 +66,9 @@ bun dev
 ## Referance
 
 - Application logo inspired by → [LogoIpsum](https://logoipsum.com)
-- Generate icons using → [RealFaviconGenerator](https://realfavicongenerator.net/)- [OpenGraph Preview](https://www.opengraph.xyz/)
-<!-- - [YouTube](https://www.youtube.com/watch?v=Av9C7xlV0fA) -->
+- Generated favicons and icons using → [RealFaviconGenerator](https://realfavicongenerator.net/)
+- Preview OpenGraph metadata using → [OpenGraph Preview](https://www.opengraph.xyz/)
+<!-- - Reference video → [YouTube](https://www.youtube.com/watch?v=Av9C7xlV0fA) -->
 
 ## License
 
