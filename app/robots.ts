@@ -24,7 +24,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: "/api/*",
+      disallow: ["/api/*", "/terms", "/privacy"],
       crawlDelay: 2, // Be nice to crawlers - Seconds between requests – polite to servers (optional, non-standard)
     },
 

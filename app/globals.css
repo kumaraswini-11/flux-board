@@ -205,3 +205,10 @@
     cursor: pointer;
   }
 }
+
+/* Hide Scrollbar */
+@utility scrollbar-hidden {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
