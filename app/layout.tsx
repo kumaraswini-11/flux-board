@@ -130,7 +130,7 @@ export default function RootLayout({
         >
           {children}
           {/* 6. Add Toast provider here so it's accessible everywhere */}
-          <Toaster />
+          <Toaster richColors />
         </ThemeProvider>
       </body>
     </html>

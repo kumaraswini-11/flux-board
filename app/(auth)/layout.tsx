@@ -10,7 +10,7 @@ export default function AuthLayout({
 }>) {
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-      <div className="flex w-full max-w-[400px] flex-col gap-5">
+      <div className="flex w-full max-w-[400px] flex-col gap-4">
         {/* Brand / Logo Section */}
         <Link
           href="/"
@@ -19,13 +19,19 @@ export default function AuthLayout({
             "transition-opacity hover:opacity-90 outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md",
           )}
         >
-          <div className="flex size-8 items-center justify-center rounded-md bg-primary/15 text-primary-foreground">
+          <div
+            className={cn(
+              "flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary-foreground",
+              // "ring-1 ring-primary/20 transition-all group-hover:ring-primary/40"
+            )}
+          >
             <Image
               src="/logo.svg"
               alt="Fluxboard"
-              width={24}
-              height={24}
-              className="size-6"
+              width={28}
+              height={28}
+              className="size-7 object-contain"
+              priority
             />
           </div>
           <span className="text-lg font-bold tracking-tight text-foreground">

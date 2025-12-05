@@ -68,7 +68,7 @@ bun dev
 - Application logo inspired by → [LogoIpsum](https://logoipsum.com)
 - Generated favicons and icons using → [RealFaviconGenerator](https://realfavicongenerator.net/)
 - Preview OpenGraph metadata using → [OpenGraph Preview](https://www.opengraph.xyz/)
-<!-- - Reference video → [YouTube](https://www.youtube.com/watch?v=Av9C7xlV0fA) -->
+<!-- - UI Reference video → [YouTube](https://www.youtube.com/watch?v=Av9C7xlV0fA) -->
 
 ## License
 
