@@ -26,6 +26,7 @@ import {
   FieldLabel,
   FieldSeparator,
 } from "@/components/ui/field";
+import { authClient } from "@/lib/auth-client";
 
 // This component is built using shadcn/ui (Field Component), TanStack Form, and Zod v4.
 
@@ -56,21 +57,35 @@ export function SignInForm({
       onSubmit: signInFormSchema,
     },
     onSubmit: async ({ value, meta }) => {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
       console.log("SignInForm ::", value);
       console.log("signInFormSchema ::", signInFormSchema.parse(value));
       console.log("meta ::", meta);
-      toast.success("You have signed in!");
+
+      // Handel Credentials sign-in with better-auth
+      const { data, error } = await authClient.signIn.email({
+        ...value,
+        callbackURL: "/", // An optional URL to redirect to after the user verifies their email (optional)
+        // rememberMe: true // If false, the user will be signed out when the browser is closed. (optional) (default: true)
+      });
     },
   });
 
   // Handle Google sign-in with transition for smooth UX
   const handleGoogleSignIn = () => {
     startGoogleTransition(async () => {
-      // Simulate OAuth flow (replace with real Google sign-in logic)
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success("Google sign in successful!");
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/", // A URL to redirect to after the user verifies the account
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success("Google sign in successful!");
+          },
+          onError: (error) => {
+            console.log("GoogleSignIn Error ::", error);
+            toast.error("Google sign in failed!");
+          },
+        },
+      });
     });
   };
 

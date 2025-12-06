@@ -30,8 +30,8 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { FALLBACK_IMAGE } from "@/lib/constants";
-
-import { SignOutAlertDialog } from "./signout-dialog";
+import { authClient } from "@/lib/auth-client";
+import { SignOutAlertDialog } from "@/components/sidebar/signout-dialog";
 
 // Define menu items and action handlers
 interface MenuItem {
@@ -77,13 +77,13 @@ export function NavUser() {
   const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
 
   // Fetch user details using better-auth
-  // const { data: session, isPending } = authClient.useSession();
-  // const user = session?.user;
-  const user = {
-    name: "SitaRam",
-    email: "sitaram@purna.com",
-    image: FALLBACK_IMAGE,
-  };
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user;
+  // const user = {
+  //   name: "SitaRam",
+  //   email: "sitaram@purna.com",
+  //   image: FALLBACK_IMAGE,
+  // };
 
   const userInitials = user?.name
     ? user.name
@@ -184,6 +184,7 @@ export function NavUser() {
               <DropdownMenuItem
                 onClick={() => setIsSignOutDialogOpen(true)}
                 className="text-destructive focus:text-destructive focus:bg-destructive/15 cursor-pointer"
+                variant="destructive"
               >
                 <LogOutIcon className="mr-1 size-4" />
                 <span>Sign Out</span>

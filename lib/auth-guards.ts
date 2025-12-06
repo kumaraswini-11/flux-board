@@ -4,6 +4,15 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 
 /**
+ * As per the "better-auth", using  middleware (proxy.ts) is not secure!
+ * Middleware is the recommended approach to optimistically redirect users.
+ * We recommend handling auth checks in each page/route.
+ * 
+ * https://www.better-auth.com/docs/integrations/next#server-action-cookies
+ * https://www.better-auth.com/docs/integrations/next#how-to-handle-auth-checks-in-each-pageroute
+ */
+
+/**
  * Optional: Get current session without redirecting, using headers — SSR only
  * Useful for conditional rendering in server components.
  */
@@ -42,7 +51,7 @@ export async function requireUnAuth() {
   const session = await getCurrentSession();
 
   if (session) {
-    redirect("/dashboard");
+    redirect("/");
   }
 
   // Session might be null or may have session without user — both are fine for guest routes

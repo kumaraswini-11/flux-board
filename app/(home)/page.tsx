@@ -1,3 +1,4 @@
+import { CreateWorkspaceForm } from "@/components/workspace/create-workspace-form";
 import { requireAuth } from "@/lib/auth-guards";
 
 export default async function Home() {
@@ -5,6 +6,8 @@ export default async function Home() {
 
   return (
      < >
+     <CreateWorkspaceForm  />
+
       {/* Page Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground">

@@ -182,6 +182,7 @@ export function NavProjects({ projects, workspaceId }: NavProjectsProps) {
                     {PROJECT_ACTIONS.map((action) => (
                       <DropdownMenuItem
                         key={action.label}
+                        // variant="destructive"
                         onClick={(e) => {
                           e.preventDefault();
                           action.onClick(project);
