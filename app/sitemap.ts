@@ -84,7 +84,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Dynamic routes: e.g., workspaces/projects (uncomment & implement with Prisma)
+  // Dynamic routes: e.g., workspace/projects (uncomment & implement with Prisma)
   // const dynamicRoutes = await prisma.workspace.findMany({
   //   select: { id: true, updatedAt: true },
   // }).then(workspaces =>

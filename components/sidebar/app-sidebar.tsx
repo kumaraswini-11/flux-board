@@ -1,8 +1,10 @@
 "use client";
 
+import { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Suspense } from "react";
 
 import {
   Sidebar,
@@ -13,6 +15,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { useWorkspaceId } from "@/hooks/use-workspace-id";
+import { AppLogo } from "@/components/app-logo";
 
 import { WorkspaceSwitcher, Workspace } from "./workspace-switcher";
 import { WorkspaceNavItems } from "./workspace-nav-items";
@@ -115,10 +119,12 @@ const sampleProjects: Project[] = [
 ];
 
 export function AppSidebar() {
-  // Centralized state management
-  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string>(
-    sampleWorkspaces[0]?.id || "",
-  );
+  const router = useRouter();
+  // const pathname = usePathname(); 
+  const workspaceId = useWorkspaceId();
+
+  // Fallback to first workspace if no URL param
+  const selectedWorkspaceId = workspaceId || sampleWorkspaces[0]?.id;
 
   // Get the selected workspace object
   const selectedWorkspace =
@@ -130,6 +136,11 @@ export function AppSidebar() {
     (project) => project.workspace_id === selectedWorkspaceId,
   );
 
+  const handleWorkspaceChange = (newWorkspaceId: string) => {
+    // Navigate to the workspace route
+    router.push(`/workspaces/${newWorkspaceId}` as Route);
+  };
+
   return (
     <Sidebar collapsible="icon">
       {/* Header – Logo + Brand */}
@@ -140,21 +151,7 @@ export function AppSidebar() {
             size="lg"
             className="h-11 hover:bg-accent/70 transition-colors"
           >
-            <Link href="/" className="flex items-center gap-2">
-              <div className="relative flex aspect-square size-8 p-1 items-center justify-center rounded-lg bg-primary/10">
-                <Image
-                  src="/logo.svg"
-                  alt="Flux Board"
-                  width={28}
-                  height={28}
-                  priority // Priority loading for critical visual element
-                  className="rounded-md object-contain"
-                />
-              </div>
-              <span className="font-bold text-lg tracking-tight">
-                Flux Board
-              </span>
-            </Link>
+            <AppLogo />
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarHeader>
@@ -162,11 +159,13 @@ export function AppSidebar() {
       {/* Main Sidebar Content */}
       <SidebarContent>
         {/* Workspace Switcher */}
+        <Suspense fallback={<div>Loading...</div>}>
         <WorkspaceSwitcher
           workspaces={sampleWorkspaces}
           selectedWorkspace={selectedWorkspace}
-          onWorkspaceChange={setSelectedWorkspaceId}
+          onWorkspaceChange={handleWorkspaceChange}
         />
+        </Suspense>
 
         {/* Primary Navigation (Dashboard, Projects, etc.) */}
         <WorkspaceNavItems />

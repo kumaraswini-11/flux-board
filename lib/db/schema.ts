@@ -99,11 +99,52 @@ export const accountRelations = relations(account, ({ one }) => ({
 export const workspace = pgTable("workspace", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
+  plan: text("plan").notNull().default("FREE"),
   image: text("image"),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
 });
+
+export const workspaceRelations = relations(workspace, ({ one }) => ({
+  user: one(user, {
+    fields: [workspace.userId],
+    references: [user.id],
+  }),
+}));
 // ----- END - Workspace Schema ---------------------------------------------
+
+// ----- START - Member Schema ---------------------------------------------
+export const member = pgTable("member", {
+  id: text("id").primaryKey(),
+  role: text("role").notNull().default("MEMBER"),
+  inviteCode: text("invite_code").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  workspaceId: text("workspace_id")
+    .notNull()
+    .references(() => workspace.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const memberRelations = relations(member, ({ one }) => ({
+  user: one(user, {
+    fields: [member.userId],
+    references: [user.id],
+  }),
+  workspace: one(workspace, {
+    fields: [member.workspaceId],
+    references: [workspace.id],
+  }),
+}));
+// ----- END - Member Schema ---------------------------------------------

@@ -22,6 +22,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { useCreateWorkspaceModal } from "@/hooks/use-create-workspace-modal";
 
 export interface Workspace {
   id: string;
@@ -41,11 +42,7 @@ export function WorkspaceSwitcher({
   selectedWorkspace,
   onWorkspaceChange,
 }: WorkspaceSwitcherProps) {
-  const handleCreateWorkspace = () => {
-    toast("Create workspace", {
-      description: "This feature is coming soon!",
-    });
-  };
+  const { open } = useCreateWorkspaceModal();
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -58,7 +55,7 @@ export function WorkspaceSwitcher({
           variant="secondary"
           size="icon"
           className="size-6 rounded-md hover:bg-primary/10 hover:text-primary transition-all"
-          onClick={handleCreateWorkspace}
+          onClick={open}
           aria-label="Create new workspace"
         >
           <PlusIcon className="size-4" />

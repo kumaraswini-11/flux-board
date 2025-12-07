@@ -1,6 +1,9 @@
+import { Suspense } from "react";
+
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { AppHeader } from "@/components/app-header";
+import { CreateWorkspaceModal } from "@/components/workspace/create-workspace-modal";
 
 export default function HomeLayout({
   children,
@@ -18,6 +21,11 @@ export default function HomeLayout({
           {children}
         </div>
       </SidebarInset>
+
+      {/* Open Create Workspace Modal */}
+      <Suspense fallback={<div>Workspace Modal Loading...</div>}>
+        <CreateWorkspaceModal />
+      </Suspense>
     </SidebarProvider>
   );
 }

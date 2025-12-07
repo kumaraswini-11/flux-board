@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { env } from "@/lib/env";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -121,15 +122,16 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetBrainsMono.variable} antialiased`}
       >
-        {/* 5. Wrap content in ThemeProvider to handle Dark/Light/System */}
+        {/* 5. Wrap content in ThemeProvider to handle Dark/Light/System - OUTERMOST (affects everything including Toaster) */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          {/* 6. Add Toast provider here so it's accessible everywhere */}
+          {/* 6. NuqsAdapter - For URL state management */}
+          <NuqsAdapter>{children}</NuqsAdapter>
+          {/* 7. Toaster - INSIDE ThemeProvider so it respects theme */}
           <Toaster richColors />
         </ThemeProvider>
       </body>

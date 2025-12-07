@@ -131,7 +131,7 @@ export function SignInForm({
                     className="size-5"
                   />
                 )}
-                Sign in with Google
+                Continue with Google
               </Button>
             </Field>
 
