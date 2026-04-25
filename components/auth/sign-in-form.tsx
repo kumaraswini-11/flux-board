@@ -27,6 +27,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { authClient } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 
 // This component is built using shadcn/ui (Field Component), TanStack Form, and Zod v4.
 
@@ -57,15 +58,28 @@ export function SignInForm({
       onSubmit: signInFormSchema,
     },
     onSubmit: async ({ value, meta }) => {
-      console.log("SignInForm ::", value);
-      console.log("signInFormSchema ::", signInFormSchema.parse(value));
-      console.log("meta ::", meta);
-
       // Handel Credentials sign-in with better-auth
       const { data, error } = await authClient.signIn.email({
         ...value,
         callbackURL: "/", // An optional URL to redirect to after the user verifies their email (optional)
         // rememberMe: true // If false, the user will be signed out when the browser is closed. (optional) (default: true)
+      }, {
+        onSuccess: async() => {
+          const {error} = await authClient.twoFactor.sendOtp({
+            
+          })
+          if(error){
+            toast.error(error.message);
+            redirect("/two-factor");
+          }
+
+          toast.success("Sign in successful!");
+          redirect("/");
+        },
+        onError: (error) => {
+          console.log("SignIn Error ::", error);
+          toast.error("Sign in failed!");
+        },
       });
     },
   });

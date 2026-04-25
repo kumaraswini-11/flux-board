@@ -206,9 +206,19 @@
   }
 }
 
-/* Hide Scrollbar */
-@utility scrollbar-hidden {
+@utility hide-scrollbar {
+  /* Hide Scrollbar */
   &::-webkit-scrollbar {
+    /* Chrome, Safari, Opera — hide scrollbar */
     display: none;
+  }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+@layer utilities {
+  /* Target the handle div inside drawer-content when direction=bottom, for create workspace drawer */
+  [data-slot="drawer-content"][data-vaul-drawer-direction="bottom"] > div:first-child {
+    @apply mt-0 h-0;
   }
 }

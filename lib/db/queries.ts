@@ -1,34 +1,117 @@
-import { and, desc, eq } from "drizzle-orm";
-// import { cache } from "react";
+"use server";
 
+import { InferInsertModel, InferSelectModel, desc, eq } from "drizzle-orm";
+import { randomUUID } from "crypto";
+
+import { workspace, project } from "@/lib/db/schema";
 import { db } from "@/lib/db";
-import { workspace } from "@/lib/db/schema";
+
+// Types for better type safety
+export type NewWorkspace = InferInsertModel<typeof workspace>;
+export type Workspace = InferSelectModel<typeof workspace>;
+export type Project = InferSelectModel<typeof project>;
 
 /**
- * 'cache' lets you cache the result of a data fetch or computation.
- * 'cache' is only for use with React Server Components.
- * cache(fn) returns a memoized version of fn: when you call the returned function with the same arguments as a previous call, it returns the previously stored result instead of recomputing.
- *
- * DOUTE:
- * - I m not sure 'cache' will happenn automaticcaly through 'react compiler' or not, like useMemo,useCallback.
- * - Now on Next.js 16, "use cache" directive is present. So here withc one is better to use?
+ * Creates a new workspace in the database.
+ * @param data The workspace data (name, plan, imageUrl, userId).
+ * @returns The created workspace object.
  */
+export async function createWorkspace(
+  data: Omit<NewWorkspace, "id" | "createdAt" | "updatedAt">,
+): Promise<Workspace> {
+  const [newWorkspace] = await db
+    .insert(workspace)
+    .values({
+      ...data,
+      id: randomUUID(),
+    })
+    .returning();
 
-// Fetches workspaces for a given user ID, sorted by most recently updated (descending).
-export async function getWorkspacesByUserId(userId: string) {
-  const workspaces = await db
+  return newWorkspace;
+}
+
+/**
+ * Retrieves all workspaces owned by a specific user ID.
+ * @param userId The ID of the user to retrieve workspaces for.
+ * @returns An array of workspace objects or an empty array if none found.
+ */
+export async function getAllWorkspacesByUserId(
+  userId: string,
+): Promise<Workspace[]> {
+  const result = await db
     .select()
     .from(workspace)
     .where(eq(workspace.userId, userId))
     .orderBy(desc(workspace.updatedAt));
-  return workspaces;
+
+  return result;
 }
 
-// Deletes a workspace by ID, but only if it belongs to the specified user.
-export async function deleteWorkspace(workspaceId: string, userId: string) {
-  const deletedWorkspace = await db
+/**
+ * Retrieves a single workspace by its ID.
+ * @param workspaceId The ID of the workspace to retrieve.
+ * @returns The workspace object or null if not found.
+ */
+export async function getWorkspaceById(
+  workspaceId: string,
+): Promise<Workspace | null> {
+  const result = await db
+    .select()
+    .from(workspace)
+    .where(eq(workspace.id, workspaceId))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : null;
+}
+
+/**
+ * Updates an existing workspace by its ID.
+ * @param workspaceId The ID of the workspace to update.
+ * @param data The fields to update (e.g., name or plan).
+ * @returns The updated workspace object or null if the ID was not found.
+ */
+export async function updateWorkspace(
+  workspaceId: string,
+  data: Partial<
+    Omit<NewWorkspace, "id" | "userId" | "createdAt" | "updatedAt">
+  >,
+): Promise<Workspace | null> {
+  // Drizzle automatically updates `updatedAt` because of your schema definition ($onUpdate)
+  const [updatedWorkspace] = await db
+    .update(workspace)
+    .set(data)
+    .where(eq(workspace.id, workspaceId))
+    .returning();
+
+  return updatedWorkspace || null;
+}
+
+/**
+ * Deletes a workspace by its ID.
+ * @param workspaceId The ID of the workspace to delete.
+ * @returns The deleted workspace object or null if not found.
+ */
+export async function deleteWorkspace(
+  workspaceId: string,
+): Promise<Workspace | null> {
+  const [deletedWorkspace] = await db
     .delete(workspace)
-    .where(and(eq(workspace.id, workspaceId), eq(workspace.userId, userId)))
-    .returning({ name: workspace.name });
+    .where(eq(workspace.id, workspaceId))
+    .returning();
+
+  // Note: Due to `onDelete: "cascade"` in the `member` table definition,
+  // all associated member records will also be automatically deleted by the database.
   return deletedWorkspace;
+}
+
+export async function getProjectsByWorkspaceId(
+  workspaceId: string,
+): Promise<Project[]> {
+  const result = await db
+    .select()
+    .from(project)
+    .where(eq(project.workspaceId, workspaceId))
+    .orderBy(desc(project.updatedAt));
+
+  return result;
 }

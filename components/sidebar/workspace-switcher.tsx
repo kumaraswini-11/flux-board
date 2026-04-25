@@ -23,11 +23,12 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { useCreateWorkspaceModal } from "@/hooks/use-create-workspace-modal";
+import Image from "next/image";
 
 export interface Workspace {
   id: string;
   name: string;
-  icon?: LucideIcon | string;
+  image?: LucideIcon | string;
   plan: string;
 }
 
@@ -74,7 +75,17 @@ export function WorkspaceSwitcher({
                 )}
               >
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <GalleryVerticalEndIcon className="size-4" />
+                  {selectedWorkspace.image ? (
+                    <Image
+                      src={selectedWorkspace.image}
+                      alt={selectedWorkspace.name}
+                      width={32}
+                      height={32}
+                      className="rounded-md"
+                    />
+                  ) : (
+                    <GalleryVerticalEndIcon className="size-4" />
+                  )}
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
@@ -100,7 +111,17 @@ export function WorkspaceSwitcher({
                   className="cursor-pointer gap-2"
                 >
                   <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-primary/10">
-                    <GalleryVerticalEndIcon className="size-4 text-primary" />
+                    {workspace.image ? (
+                    <Image
+                      src={workspace.image}
+                      alt={workspace.name}
+                      width={32}
+                      height={32}
+                      className="rounded-md"
+                    />
+                  ) : (
+                    <GalleryVerticalEndIcon className="size-4" />
+                  )}
                   </div>
                   <div className="grid flex-1">
                     <span className="font-medium">{workspace.name}</span>

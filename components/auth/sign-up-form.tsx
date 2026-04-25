@@ -27,6 +27,8 @@ import {
   FieldLabel,
   FieldSeparator,
 } from "@/components/ui/field";
+import { authClient } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 
 // This component is built using shadcn/ui (Field Component), TanStack Form, and Zod v4.
 
@@ -34,6 +36,7 @@ import {
 // Define the sign-up validation schema
 const signUpFormSchema = z
   .object({
+    name: z.string().min(1, "Name is required"),
     email: z.email("Invalid email address"),
     password: z
       .string()
@@ -56,6 +59,7 @@ export function SignUpForm({
   // Initialize the TanStack Form with default values and validation
   const signUpForm = useForm({
     defaultValues: {
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -69,12 +73,26 @@ export function SignUpForm({
     //   modeAfterSubmission: "blur",
     // }),
     onSubmit: async ({ value, meta }) => {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2500));
       console.log("SignUpForm ::", value);
       console.log("signUpFormSchema ::", signUpFormSchema.parse(value));
       console.log("meta ::", meta);
-      toast.success("You have signed up!");
+      
+// Handel Credentials sign-up with better-auth
+      const { data, error } = await authClient.signUp.email({
+        name: value.name,
+        email: value.email,
+        password: value.password,
+        callbackURL: "/", // An optional URL to redirect to after the user verifies their email (optional)
+      }, {
+        onSuccess: async() => {
+          toast.success("Sign up successful!");
+          redirect("/");
+        },
+        onError: (error) => {
+          console.log("SignUp Error ::", error);
+          toast.error("Sign up failed!");
+        },
+      });
     },
   });
 
@@ -146,6 +164,33 @@ export function SignUpForm({
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
               </FieldSeparator>
+
+              {/* Name Field */}
+              <signUpForm.Field
+                name="name"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        onBlur={field.handleBlur}
+                        placeholder="Enter your name"
+                        aria-invalid={isInvalid}
+                        disabled={isPending}
+                        required
+                      />
+                      <FieldDescription>Name is required</FieldDescription>
+                      {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    </Field>
+                  );
+                }}
+              />
 
               {/* 3. Email Field */}
               <signUpForm.Field

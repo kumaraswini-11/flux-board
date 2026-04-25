@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageIcon, UploadIcon, X, Loader2 } from "lucide-react";
+import { ImageIcon, UploadIcon, X, Loader2, ArrowLeft, CopyIcon } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -30,17 +30,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { ACCEPTED_IMAGE_FORMATS, MAX_FILE_SIZE_MB } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
-interface CreateWorkspaceFormProps {
+interface EditWorkspaceFormProps {
+    initialValues?: EditWorkspaceFormType;
   onCancel?: () => void;
-  onSubmitWorkspaceForm?: (values: CreateWorkspaceFormType) => void;
+  onSubmitWorkspaceForm?: (values: EditWorkspaceFormType) => void;
 }
 
-const createWorkspaceSchema = z.object({
+const editWorkspaceSchema = z.object({
   name: z
     .string()
-    .min(3, "Name must be at least 3 characters")
-    .max(36, "Name must be at most 36 characters"),
+    .min(3, "Must be at least 3 or more characters")
+    .max(36, "Must be at most 36 or less characters")
+    .optional(),
   image: z
     .union([
       z.instanceof(File),
@@ -49,23 +52,28 @@ const createWorkspaceSchema = z.object({
     .optional(),
 });
 
-type CreateWorkspaceFormType = z.infer<typeof createWorkspaceSchema>;
 
-export function CreateWorkspaceForm({
+type EditWorkspaceFormType = z.infer<typeof editWorkspaceSchema>;
+
+export function EditWorkspaceForm({
+  initialValues,
   onCancel,
   onSubmitWorkspaceForm,
-}: CreateWorkspaceFormProps) {
+}: EditWorkspaceFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+console.log("Initial Values ::", initialValues);
 
-  const workspaceForm = useForm<CreateWorkspaceFormType>({
-    resolver: zodResolver(createWorkspaceSchema),
+  const workspaceForm = useForm<EditWorkspaceFormType>({
+    resolver: zodResolver(editWorkspaceSchema),
     mode: "onChange",
     defaultValues: {
-      name: "",
-      image: undefined,
+     ...initialValues,
+     image: initialValues?.image ?? undefined,
     },
   });
 
@@ -144,7 +152,7 @@ export function CreateWorkspaceForm({
     }
   };
 
-  async function onSubmit(values: CreateWorkspaceFormType) {
+  async function onSubmit(values: EditWorkspaceFormType) {
     setIsSubmitting(true);
 
     try {
@@ -168,13 +176,20 @@ export function CreateWorkspaceForm({
     }
   }
 
+  // const fullInviteLink = `${window.location.origin}/workspaces/${initialValues?.id}/join/{initialValues?.inviteCode}`;
   return (
+          <div className=" flex flex-col gap-4">  
+          {/* <ResetInviteLinkDialog/> */}
+          {/* <Delete Dialog/> */}
+
+          {/* Edit form */}
     <Card className="w-full gap-4 rounded-lg">
-      <CardHeader>
-        <CardTitle className="text-xl font-bold">Create Workspace</CardTitle>
-        <CardDescription>
-          Set up a new workspace for your team to collaborate.
-        </CardDescription>
+      <CardHeader className="flex flex-row items-center gap-x-4 space-y-0">
+        <Button size="sm" variant="secondary" onClick={onCancel ? onCancel : ()=> router.push(`/workspaces/${initialValues?.image}`)}>
+          <ArrowLeft className="size-4" />
+          Back
+        </Button>
+        <CardTitle className="text-xl font-bold">{initialValues?.name}</CardTitle>
       </CardHeader>
 
       <FieldSeparator />
@@ -309,7 +324,7 @@ export function CreateWorkspaceForm({
 
                             <Button
                               type="button"
-                              variant="outline"
+                              variant={imagePreview? "secondary":"outline"}
                               size="sm"
                               className="mt-1 h-9 gap-2"
                               onClick={() => inputRef.current?.click()}
@@ -372,13 +387,53 @@ export function CreateWorkspaceForm({
           {isSubmitting ? (
             <>
               <Loader2 className="size-4 animate-spin" />
-              Creating...
+              Saving...
             </>
           ) : (
-            "Create Workspace"
+            "Save Changes"
           )}
         </Button>
       </CardFooter>
     </Card>
+
+    {/* Invite Members */}
+    <Card>
+      <CardHeader>
+        <CardTitle className="font-bold">Invite Members</CardTitle>
+        <CardDescription>
+          Use the invite link to add members to your workspace
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="mt-2">
+          <div className="flex items-center gap-2">
+            <Input disabled value={"fullInviteLink"} className="truncate"/>
+            <Button type="button" size="icon-lg" variant="secondary" onClick={()=>{}}>
+              <CopyIcon className="size-4"/>
+            </Button>
+          </div>
+        </div>
+          <Button type="button" size="sm" variant="destructive" className="w-fit" onClick={()=>{}}
+            // disabled={isSubmitting}
+            >Reset Invite Link</Button>
+
+            {/* After reset button lcick on sucess clcik get the new code and router .refesh the page so that i get the ne code */}
+      </CardContent>
+    </Card>
+
+     {/* Delete workspace */}
+      <Card className=" w-full">
+<CardHeader>
+  <CardTitle className="font-bold">Delete Zone</CardTitle>
+  <CardDescription>
+Deleting a workspace is irreversible and will remove all associated data.  </CardDescription>
+</CardHeader>
+<CardContent className="flex justify-end">
+  {/* TODO
+  : will add a conformation MODAL */}
+  <Button type="button" size="sm" variant="destructive" className="w-fit" onClick={()=>{router.push(`/workspaces/${initialValues?.image}`)}}>Delete Workspace</Button>
+</CardContent>
+      </Card>
+      </div>
   );
 }

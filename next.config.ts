@@ -9,6 +9,17 @@ const nextConfig: NextConfig = {
   experimental: {
     turbopackFileSystemCacheForDev: true,
   },
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',     // all hostnames (wildcard)
+        port: '',
+        pathname: '/**'     // all paths
+      },
+    ],
+  },
 };
 
 export default nextConfig;

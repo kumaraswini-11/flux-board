@@ -1,14 +1,14 @@
 import { Route } from "next";
 import { redirect } from "next/navigation";
 
-import { requireAuth } from "@/lib/auth-guards";
-import { getWorkspacesByUserId } from "@/lib/db/queries";
+import { requireAuth } from "@/lib/auth-utils";
+import { getAllWorkspacesByUserId } from "@/lib/db/queries";
 
 export default async function HomePage() {
   const session = await requireAuth();
 
   // Fetch workspaces from database
-  const workspaces = await getWorkspacesByUserId(session.user.id);
+  const workspaces = await getAllWorkspacesByUserId(session.user.id);
   console.log("workspaces ::", workspaces);
 
    // No workspaces available - redirect to create

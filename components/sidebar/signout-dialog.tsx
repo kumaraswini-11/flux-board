@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -11,34 +13,45 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { authClient } from "@/lib/auth-client";
+import { Route } from "next";
+import { Spinner } from "@/components/spinner";
+
+interface SignOutAlertDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  redirectTo?: string;
+}
 
 export function SignOutAlertDialog({
   open,
   onOpenChange,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
+  redirectTo = "/sign-in",
+}: SignOutAlertDialogProps) {
   const router = useRouter();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
-  // Handle sign-out process
-  const handleSignOut = async () => {
-    setIsProcessing(true);
+  const handleSignOut = async (e: React.MouseEvent) => {
+    // Prevent the dialog from closing immediately so we can handle the async logic
+    e.preventDefault();
+
+    setIsPending(true);
+
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          toast.success("You've been signed out successfully.");
-          onOpenChange(false); // Close dialog
-          router.push("/sign-in");
+          toast.success("Signed out successfully");
+          onOpenChange(false);
+          router.push(redirectTo as Route);
+          router.refresh(); // Recommended: refreshes server components to clear stale auth state
         },
-        onError: (error) => {
-          console.error("Sign out error:", error);
-          toast.error("Failed to sign out");
-          setIsProcessing(false);
+        onError: (ctx) => {
+          console.error("Sign out error:", ctx.error);
+          toast.error(
+            ctx.error.message || "Failed to sign out. Please try again."
+          );
+          setIsPending(false);
         },
       },
     });
@@ -48,16 +61,28 @@ export function SignOutAlertDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Confirm Sign Out</AlertDialogTitle>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to sign out? You can always log back in later.
+            This will end your current session. You will need to log back in to
+            access your dashboard.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isProcessing}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleSignOut} disabled={isProcessing}>
-            {isProcessing ? "Signing out..." : "Sign Out"}
+          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleSignOut}
+            disabled={isPending}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {isPending ? (
+              <>
+                <Spinner />
+                Signing out...
+              </>
+            ) : (
+              "Sign Out"
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
